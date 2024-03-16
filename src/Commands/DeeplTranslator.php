@@ -284,6 +284,7 @@ class DeeplTranslator extends Command
 
 		foreach ($resultArray as $filename => $newTranslations) {
 			$newTranslations = array_merge($newTranslations, $this->currentlyTranslated[$filename] ?? []);
+			$this->currentlyTranslated[$filename] = $newTranslations;
 
 			if ($this->option('json')) {
 				$fileContents = json_encode($newTranslations, JSON_THROW_ON_ERROR);
