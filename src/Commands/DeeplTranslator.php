@@ -232,8 +232,6 @@ class DeeplTranslator extends Command
 			}
 		}
 
-		dump($texts);
-
 		return $texts;
 	}
 
@@ -302,8 +300,6 @@ class DeeplTranslator extends Command
 		$resultArray = [];
 		foreach ($translations as $translation) {
 
-			dump($translation->text);
-
 			$filename = $this->everything_in_tags($translation->text, 'ignore-filename')[0];
 			$index2 = $this->everything_in_tags($translation->text, 'ignore-index');
 			$index = urldecode($this->everything_in_tags($translation->text, 'ignore-index')[0]);
@@ -323,7 +319,7 @@ class DeeplTranslator extends Command
 				'<ignore>',
 				'</ignore>',
 			];
-			$newText = urldecode(str_replace($toReplace, '', $translation->text));
+			$newText = urldecode(str_replace('&amp;', '&', str_replace($toReplace, '', $translation->text)));
 
 			$a = $newText;
 			if (count($index2) > 1) {
