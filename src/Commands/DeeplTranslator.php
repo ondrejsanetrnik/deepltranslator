@@ -208,6 +208,8 @@ class DeeplTranslator extends Command
 	private function addIgnoreToTextForDeepL($translations, $filename, $texts = [], $indexes = [])
 	{
 		foreach ($translations as $index => $chunkedTranslation) {
+			$index = urlencode($index);
+
 			if (is_array($chunkedTranslation)) {
 				$indexes[] = $index;
 				$result = collect($this->addIgnoreToTextForDeepL($chunkedTranslation, $filename, [], $indexes))->flatten()->toArray();
@@ -303,8 +305,8 @@ class DeeplTranslator extends Command
 			dump($translation->text);
 
 			$filename = $this->everything_in_tags($translation->text, 'ignore-filename')[0];
-			$index2 = $this->everything_in_tags($translation->text, 'ignore-index');
-			$index = $this->everything_in_tags($translation->text, 'ignore-index')[0];
+			$index2 = urldecode($this->everything_in_tags($translation->text, 'ignore-index'));
+			$index = urldecode($this->everything_in_tags($translation->text, 'ignore-index')[0]);
 
 			$toReplace = [
 				$filename,
