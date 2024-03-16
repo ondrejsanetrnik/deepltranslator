@@ -48,6 +48,7 @@ class DeeplTranslator extends Command
 
     public function __construct()
     {
+        // Yayy, my own comment!
         parent::__construct();
     }
 
