@@ -190,7 +190,7 @@ class DeeplTranslator extends Command
 		};
 
 		$pool = new Pool($client, $requests(), [
-			'concurrency' => 5,
+			'concurrency' => 1,
 			'fulfilled'   => function (Response $response, $index) {
 				$test = $response->getBody()->getContents();
 				$this->handleResponse($test);
