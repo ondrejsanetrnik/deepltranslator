@@ -42,7 +42,7 @@ class DeeplTranslator extends Command
 		"ZH",
 	];
 
-	protected $signature = 'deepl:translate {from} {to} {--filename=} {--json}';
+	protected $signature = 'deepl:translate {from} {to} {--filename=} {--json} {--abort}';
 
 	protected $description = 'Will translate all language files from a language to other language of choice using deepl API';
 
@@ -85,16 +85,15 @@ class DeeplTranslator extends Command
 			return true;
 		}
 
-
 		// Already translated some files , overwrite question
-		if (file_exists($toPath)) {
-			$confirmed = $this->confirm('We see that the language you are wanting to translate already exists, do you wish to translate the remaining untranslated strings? [y/N]');
-
-			if (!$confirmed) {
-				$this->line('Ok, we stopped the command');
-				return true;
-			}
-		}
+//        if (file_exists($toPath)) {
+//            $confirmed = $this->confirm('We see that the language you are wanting to translate already exists, do you wish to translate the remaining untranslated strings? [y/N]');
+//
+//            if (!$confirmed) {
+//                $this->line('Ok, we stopped the command');
+//                return true;
+//            }
+//        }
 
 		// Specific file requested to translate
 		if ($this->option('filename')) {
@@ -108,12 +107,16 @@ class DeeplTranslator extends Command
 			$filesInDirectory = array_diff(scandir($fromPath), ['..', '.']);
 		}
 
+		$this->line('Yayy, I am translating the files now! ' . json_encode($filesInDirectory));
+
 		$translations = [];
 		$this->currentlyTranslated = [];
 
 		foreach ($filesInDirectory as $translationFile) {
 			if (file_exists($toPath . '/' . $translationFile)) {
-				$this->currentlyTranslated[$translationFile] = include $toPath . '/' . $translationFile;
+				$this->option('json')
+					? $this->currentlyTranslated[$translationFile] = json_decode(file_get_contents($toPath . '/' . $translationFile), true)
+					: $this->currentlyTranslated[$translationFile] = include $toPath . '/' . $translationFile;
 			}
 
 			if ($this->option('json')) {
@@ -138,7 +141,17 @@ class DeeplTranslator extends Command
 				$notTranslatedAllready[$key] = $string;
 			}
 
-			if (count($notTranslatedAllready) === 0) continue;
+			if (count($notTranslatedAllready) === 0) {
+				$this->line('No translations to translate for ' . $filename);
+				continue;
+			} else {
+				$confirmed = $this->confirm('Translating ' . count($notTranslatedAllready) . ' strings for ' . $filename . '. Continue? [y/N]');
+
+				if (!$confirmed) {
+					$this->line('Ok, skipping this file');
+					continue;
+				}
+			}
 
 			$allFiles[] = [
 				'translations' => $notTranslatedAllready,
@@ -151,6 +164,9 @@ class DeeplTranslator extends Command
 
 		if ($allFiles->count() === 0) {
 			$this->error('Nothing to translate');
+			return;
+		} elseif ($this->option('abort')) {
+			$this->line('Aborted the command');
 			return;
 		}
 
@@ -287,7 +303,7 @@ class DeeplTranslator extends Command
 			$this->currentlyTranslated[$filename] = $newTranslations;
 
 			if ($this->option('json')) {
-				$fileContents = json_encode($newTranslations, JSON_THROW_ON_ERROR);
+				$fileContents = json_encode($newTranslations, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
 			} else {
 				$fileContents = '<?php return ' . var_export($newTranslations, true) . ';';
 			}
