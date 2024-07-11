@@ -3,6 +3,7 @@
 namespace Alessiodh\Deepltranslator\Commands;
 
 use GuzzleHttp\Client;
+use App\Helpers\Helpers;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Pool;
 use GuzzleHttp\Psr7\Response;
@@ -183,6 +184,7 @@ class DeeplTranslator extends Command
 						'auth_key'            => config('deepltranslator.deepl_api_key'),
 						'formality'           => config('deepltranslator.formality'),
 						'preserve_formatting' => config('deepltranslator.preserve_formatting'),
+						'context' 	      => Helpers::CONTEXT,
 					];
 
 					$texts = $this->addIgnoreToTextForDeepL($chunkedTranslations, $file['filename']);
