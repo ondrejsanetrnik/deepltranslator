@@ -184,6 +184,7 @@ class DeeplTranslator extends Command
 						'auth_key'            => config('deepltranslator.deepl_api_key'),
 						'formality'           => config('deepltranslator.formality'),
 						'preserve_formatting' => config('deepltranslator.preserve_formatting'),
+						'model_type'          => config('deepltranslator.model_type', 'quality_optimized'),
 						'context' 	      => Helpers::CONTEXT,
 					];
 

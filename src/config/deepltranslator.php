@@ -14,6 +14,12 @@ return [
      * @see https://www.deepl.com/docs-api/translating-text/
      */
     'formality' => 'default',
+
+    /**
+     * Prefer next-gen quality over classic latency-optimized models.
+     * @see https://developers.deepl.com/docs/translate/understanding-model-types
+     */
+    'model_type' => 'quality_optimized',
     /**
      * Sets whether the translation engine should respect the original formatting,
      * even if it would usually correct some aspects. Possible values are:
