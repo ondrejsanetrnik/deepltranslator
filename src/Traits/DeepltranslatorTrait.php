@@ -56,6 +56,7 @@ trait DeepltranslatorTrait {
                 'target_lang' => strtoupper($toLang),
                 'auth_key' => config('deepltranslator.deepl_api_key'),
                 'formality' => config('deepltranslator.formality'),
+                'model_type' => config('deepltranslator.model_type', 'quality_optimized'),
                 'preserve_formatting' => config('deepltranslator.preserve_formatting'),
             ];
             $body = http_build_query($params).'&text='.$text;
